@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>صفحة المهام والمكافآت</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      background: linear-gradient(to right, #000000, #0f2027);
+      font-family: 'Tajawal', sans-serif;
+      color: white;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      color: #00e5ff;
+    }
+    .section {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+    .task {
+      padding: 12px 15px;
+      margin-bottom: 12px;
+      border: 1px solid #00e5ff;
+      border-radius: 10px;
+      background-color: rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .task span {
+      max-width: 75%;
+      word-wrap: break-word;
+    }
+    button {
+      background-color: #00e5ff;
+      border: none;
+      color: black;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #00bcd4;
+    }
+    .contact {
+      margin-top: 40px;
+      background-color: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      font-size: 1.1em;
+      color: #ffd54f;
+      box-shadow: 0 0 12px rgba(255, 213, 79, 0.6);
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #000;
+      display: flex;
+      justify-content: space-around;
+      padding: 14px 0;
+      box-shadow: 0 -2px 10px rgba(0, 229, 255, 0.5);
+      z-index: 100;
+    }
+    .bottom-nav button {
+      background: none;
+      border: none;
+      color: #00e5ff;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .bottom-nav button:hover {
+      color: #ffffff;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding-bottom: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>مهام المكافآت اليومية</h1>
+
+  <div class="section">
+    <h2>مهام الانضمام إلى قنوات تلجرام</h2>
+    <div class="task">
+      <span>انضم إلى قناة تلجرام - 50 نقطة</span>
+      <button onclick="joinTelegram('https://t.me/+nPbdNUQm21UwMzY0')">انضم الآن</button>
+    </div>
+    <div class="task">
+      <span>انضم إلى قناة تلجرام - 50 نقطة</span>
+      <button onclick="joinTelegram('https://t.me/+mbHlaogqNZ0zNzc0')">انضم الآن</button>
+    </div>
+    <div class="task">
+      <span>انضم إلى قناة تلجرام - 50 نقطة</span>
+      <button onclick="joinTelegram('https://t.me/support_channel')">انضم الآن</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>مهام مشاهدة الإعلانات</h2>
+    <div class="task">
+      <span>شاهد إعلان فيديو واحصل على 30 نقطة</span>
+      <button onclick="watchAd()">شاهد الإعلان</button>
+    </div>
+    <div class="task">
+      <span>شاهد إعلان ترويجي واحصل على 50 نقطة</span>
+      <button onclick="watchAd()">شاهد الإعلان</button>
+    </div>
+  </div>
+
+  <div class="contact">
+    <p>هل تريد عرض إعلان أو منتجاتك هنا؟</p>
+    <p>تواصل معنا عبر : <a href="https://t.me/marawan7557" target="_blank" style="color:#ffd54f;">@marawan7557</a></p>
+  </div>
+
+  <!-- شريط التنقل السفلي -->
+  <div class="bottom-nav">
+    <button onclick="goTo('page.html')">شحن</button>
+    <button onclick="goTo('profit.html')">نقاطك</button>
+    <button onclick="goTo('contact.html')">خدمه العملاء</button>
+    <button onclick="goTo('role.html')">المهام</button>
+    <button onclick="goto('invite.html')">الدعوه</button>
+  </div>
+
+  <script>
+    function joinTelegram(link) {
+      window.open(link, '_blank');
+      alert('شكراً لانضمامك! تم إضافة 50 نقطة إلى حسابك.');
+    }
+
+    function watchAd() {
+      alert('شاهد الإعلان كاملاً للحصول على مكافأتك.');
+      alert('تم منحك نقاط بعد مشاهدة الإعلان.');
+    }
+
+    function goTo(page) {
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>

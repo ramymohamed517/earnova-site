@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>إتمام الشحن</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {box-sizing: border-box; margin: 0; padding: 0;}
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #fff;
+      text-align: center;
+      padding-bottom: 100px; /* مساحة تحت للشريط */
+      background: #000;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: -1;
+    }
+
+    h2 { color: #00e5ff; margin: 20px 0; }
+
+    form {
+      max-width: 450px;
+      margin: auto;
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00e5ff55;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      text-align: right;
+      color: #00e5ff;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #222;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .package-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .package-options label {
+      background: #111;
+      border: 1px solid #00e5ff77;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .package-options input[type="radio"] {
+      display: none;
+    }
+
+    .package-options input[type="radio"]:checked + label {
+      background: #00e5ff;
+      color: #000;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background-color: #00e5ff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .message {
+      margin-top: 10px;
+      color: #0f0;
+    }
+
+    .transfer-info {
+      margin: 30px auto 15px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px #00e5ff55;
+      max-width: 450px;
+    }
+
+    .transfer-info .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .transfer-info button {
+      padding: 5px 10px;
+      font-size: 14px;
+      background: #00e5ff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    /* الشريط السفلي */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      height: 75px;
+      background: #111;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #333;
+      z-index: 10;
+    }
+
+    .bottom-nav a {
+      color: #00e5ff;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bottom-nav a i {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+  </style>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
+      authDomain: "storelogin-2878a.firebaseapp.com",
+      projectId: "storelogin-2878a",
+      storageBucket: "storelogin-2878a.appspot.com",
+      messagingSenderId: "769303028919",
+      appId: "1:769303028919:web:e8a635d10faa9486c41932"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.sendOrder = async () => {
+      const pubgId = document.getElementById("pubgId").value;
+      const phone = document.getElementById("phone").value;
+      const screenshot = document.getElementById("screenshot").files[0];
+      const selectedPackage = document.querySelector('input[name="package"]:checked');
+
+      if (!pubgId || !phone || !selectedPackage || !screenshot) {
+        alert("يرجى ملء كل البيانات");
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append("file", screenshot);
+        formData.append("upload_preset", "public_upload");
+        formData.append("folder", "orders");
+
+        const res = await fetch("https://api.cloudinary.com/v1_1/dfwkrbg4p/image/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        const imageUrl = data.secure_url;
+
+        await addDoc(collection(db, "orders"), {
+          pubgId,
+          phone,
+          package: selectedPackage.value,
+          imageUrl,
+          status: "قيد المراجعة",
+          createdAt: new Date()
+        });
+
+        document.getElementById("msg").innerText = "✅ تم إرسال الطلب بنجاح!";
+        setTimeout(() => {
+          localStorage.setItem("userPhone", phone);
+          localStorage.setItem("userPubgId", pubgId);
+          window.location.href = "history.html";
+        }, 2000);
+      } catch (e) {
+        console.error(e);
+        alert("حدث خطأ أثناء رفع البيانات.");
+      }
+    }
+  </script>
+
+  <script>
+    function copyPhoneNumber() {
+      const number = document.getElementById("copyNumber").innerText;
+      navigator.clipboard.writeText(number).then(() => {
+        document.getElementById("copyMsg").innerText = "✅ تم نسخ الرقم!";
+        setTimeout(() => {
+          document.getElementById("copyMsg").innerText = "";
+        }, 2000);
+      }).catch(err => {
+        alert("حدث خطأ أثناء النسخ.");
+      });
+    }
+  </script>
+
+  <!-- FontAwesome Icons -->
+  <script src="https://kit.fontawesome.com/8fa4d1c2c0.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- خلفية الفيديو -->
+  <video autoplay muted loop playsinline id="bgVideo">
+    <source src="assets/images/vidio.mp4" type="video/mp4">
+    متصفحك لا يدعم تشغيل الفيديو.
+  </video>
+  <div class="overlay"></div>
+
+  <!-- العنوان -->
+  <h2>إتمام عملية الشحن</h2>
+
+  <!-- معلومات التحويل -->
+  <div class="transfer-info">
+    <p class="title">يرجى تحويل المبلغ إلى رقم فودافون كاش التالي:</p>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <p id="copyNumber" style="margin: 0; font-size: 18px; direction: ltr;">01120132055</p>
+      <button onclick="copyPhoneNumber()">نسخ الرقم</button>
+    </div>
+    <p id="copyMsg" style="color: #0f0; font-size: 14px; margin-top: 5px;"></p>
+  </div>
+
+  <!-- النموذج -->
+  <form onsubmit="event.preventDefault(); sendOrder();">
+    <label for="pubgId">ID ببجي:</label>
+    <input type="text" id="pubgId" placeholder="اكتب ID الخاص بك">
+
+    <label for="phone">رقم الهاتف الخاص بك:</label>
+    <input type="text" id="phone" placeholder="مثال: 01012345678">
+
+    <label>اختر الباقة:</label>
+    <div class="package-options">
+      <input type="radio" id="p1" name="package" value="60 UC - 50 جنيه"><label for="p1">60 UC<br>50ج</label>
+      <input type="radio" id="p2" name="package" value="120 UC - 100 جنيه"><label for="p2">120 UC<br>100ج</label>
+      <input type="radio" id="p3" name="package" value="325 UC - 235 جنيه"><label for="p3">325 UC<br>235ج</label>
+      <input type="radio" id="p4" name="package" value="660 UC - 445 جنيه"><label for="p4">660 UC<br>445ج</label>
+      <input type="radio" id="p5" name="package" value="1800 UC - 1100 جنيه"><label for="p5">1800 UC<br>1100ج</label>
+      <input type="radio" id="p6" name="package" value="3850 UC - 2100 جنيه"><label for="p6">3850 UC<br>2100ج</label>
+      <input type="radio" id="p7" name="package" value="8100 UC - 4500 جنيه"><label for="p7">8100 UC<br>4500ج</label>
+      <input type="radio" id="p8" name="package" value="16000 UC - 9200 جنيه"><label for="p8">16000 UC<br>9200ج</label>
+    </div>
+
+    <label for="screenshot">صورة التحويل:</label>
+    <input type="file" id="screenshot" accept="image/*">
+
+    <button type="submit">إرسال الطلب</button>
+    <div class="message" id="msg"></div>
+  </form>
+
+  <!-- شريط التنقل السفلي -->
+  <div class="bottom-nav">
+   <a href="page.html">شحن</a>
+    <a href="profit.html">نقاطك</a>
+    <a href="contact.html">خدمة العملاء</a>
+    <a href="role.html">مهام</a>
+    <a herf="invite.html">الدعوه</a>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+

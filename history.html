@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سجل الطلبات</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      background: #000;
+      padding-bottom: 70px;
+      overflow-x: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+    }
+
+    /* فيديو خلفية */
+    #bg-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.25;
+    }
+
+    h2 {
+      color: #00e5ff;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #orders {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .order {
+      border: 1px solid #00e5ff;
+      background: rgba(0,0,0,0.7);
+      box-shadow: 0 0 10px #00e5ff66;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      backdrop-filter: blur(4px);
+    }
+
+    .order img {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .status.pending { background: orange; color: black; }
+    .status.success { background: #0f0; color: #000; }
+    .status.rejected { background: red; color: #fff; }
+
+    /* شريط التنقل السفلي */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      height: 60px;
+      background: #111;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #333;
+      z-index: 10;
+    }
+
+    .bottom-nav a {
+      color: #00e5ff;
+      text-decoration: none;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bottom-nav a i {
+      font-size: 20px;
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 480px) {
+      h2 { font-size: 20px; }
+      .order p { font-size: 14px; }
+    }
+  </style>
+
+  <!-- FontAwesome icons -->
+  <script src="https://kit.fontawesome.com/8fa4d1c2c0.js" crossorigin="anonymous"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
+      authDomain: "storelogin-2878a.firebaseapp.com",
+      projectId: "storelogin-2878a",
+      storageBucket: "storelogin-2878a.appspot.com",
+      messagingSenderId: "769303028919",
+      appId: "1:769303028919:web:e8a635d10faa9486c41932",
+      measurementId: "G-FLBGGC4HSW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const phone = localStorage.getItem("userPhone");
+
+    function getStatusClass(status) {
+      if (status.includes("تم")) return "success";
+      if (status.includes("مرفوض")) return "rejected";
+      return "pending";
+    }
+
+    async function loadOrders() {
+      const querySnapshot = await getDocs(collection(db, "orders"));
+      let html = "";
+
+      querySnapshot.forEach((doc) => {
+        const order = doc.data();
+        if (order.phone === phone) {
+          const date = new Date(order.createdAt.seconds * 1000).toLocaleString();
+          const statusClass = getStatusClass(order.status || "");
+          html += `
+            <div class="order">
+              <p>💳 <strong>الباقة:</strong> ${order.package}</p>
+              <p>📅 <strong>التاريخ:</strong> ${date}</p>
+              <p>🧾 <strong>الحالة:</strong> <span class="status ${statusClass}">${order.status}</span></p>
+              <img src="${order.imageUrl}" alt="صورة التحويل">
+            </div>
+          `;
+        }
+      });
+
+      document.getElementById("orders").innerHTML = html || "<p style='text-align:center;'>لا يوجد طلبات.</p>";
+    }
+
+    window.onload = loadOrders;
+  </script>
+</head>
+<body>
+  <!-- فيديو الخلفية -->
+  <video autoplay muted loop id="bg-video">
+    <source src="https://cdn.coverr.co/videos/coverr-digital-grid-3292/1080p.mp4" type="video/mp4">
+    متصفحك لا يدعم تشغيل الفيديو.
+  </video>
+
+  <h2>📜 سجل الطلبات</h2>
+  <div id="orders">⏳ جارٍ التحميل...</div>
+
+  <!-- شريط التنقل السفلي -->
+   <div class="bottom-nav">
+    <a href="page.html">شحن</a>
+    <a href="profit.html">نقاطك</a>
+    <a href="contact.html">خدمة العملاء</a>
+    <a href="role.html">مهام</a>
+    <a herf="invite.html">الدعوه</a>
+  </div>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>تسجيل الدخول - PUBG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('assets/images/grafic.png') no-repeat center center;
+      background-size: cover;
+      z-index: -2;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      color: white;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+    }
+
+    .logo {
+      width: 100%;
+      max-width: 200px;
+      margin: 0 auto 15px;
+      display: block;
+      border-radius: 12px;
+    }
+
+    h2 {
+      color: #00e5ff;
+      margin-bottom: 25px;
+      font-size: 28px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      font-size: 16px;
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    input::placeholder {
+      color: #ddd;
+    }
+
+    input:focus {
+      background-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 8px #00e5ff;
+      border-color: #00e5ff;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #00e5ff;
+      color: #111;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #00bcd4;
+      transform: translateY(-2px);
+    }
+
+    .links {
+      margin-top: 20px;
+    }
+
+    .links a {
+      color: #00e5ff;
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .links a:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 229, 255, 0.9);
+      color: #000;
+      padding: 20px 35px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.7);
+      z-index: 999;
+      display: none;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .uc {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      background-image: url('assets/money.png');
+      background-size: cover;
+      animation: fall linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% {
+        top: -40px;
+        opacity: 1;
+        transform: rotate(0deg);
+      }
+      100% {
+        top: 110vh;
+        opacity: 0;
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      input, button {
+        font-size: 14px;
+        padding: 12px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      .logo {
+        max-width: 150px;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <!-- تساقط UC -->
+  <script>
+    for (let i = 0; i < 25; i++) {
+      const uc = document.createElement('div');
+      uc.className = 'uc';
+      uc.style.left = Math.random() * 100 + 'vw';
+      uc.style.animationDuration = (4 + Math.random() * 4) + 's';
+      uc.style.animationDelay = (Math.random() * 5) + 's';
+      document.body.appendChild(uc);
+    }
+  </script>
+
+  <div class="container" role="main">
+    <!-- لوجو فيديو -->
+    <video class="logo" autoplay muted loop playsinline>
+      <source src="assets/images/vidio.mp4" type="video/mp4">
+      متصفحك لا يدعم تشغيل الفيديو.
+    </video>
+
+    <h2>تسجيل الدخول</h2>
+    <input id="email" type="email" placeholder="البريد الإلكتروني" required />
+    <input id="password" type="password" placeholder="كلمة المرور" required />
+    <button id="loginBtn">دخول</button>
+    <div class="links">
+      <a href="register.html">ليس لديك حساب؟ أنشئ حساب</a>
+    </div>
+  </div>
+
+  <div id="successMessage" class="success-message">تم تسجيل الدخول بنجاح!</div>
+
+  <!-- Firebase Auth -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
+      authDomain: "storelogin-2878a.firebaseapp.com",
+      projectId: "storelogin-2878a",
+      storageBucket: "storelogin-2878a.firebasestorage.app",
+      messagingSenderId: "769303028919",
+      appId: "1:769303028919:web:e8a635d10faa9486c41932",
+      measurementId: "G-FLBGGC4HSW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        alert('يرجى ملء جميع الحقول');
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        const successMessage = document.getElementById('successMessage');
+        successMessage.style.display = 'block';
+        setTimeout(() => {
+          successMessage.style.display = 'none';
+          window.location.href = 'page.html';
+        }, 2500);
+      } catch (error) {
+        alert('فشل تسجيل الدخول: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
