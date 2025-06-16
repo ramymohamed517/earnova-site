@@ -12,15 +12,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 30px;
+      padding: 30px 0 70px; /* أضف padding أسفل لإفساح مكان الشريط */
       text-align: center;
+      min-height: 100vh;
+      box-sizing: border-box;
     }
-
     h1 {
       color: #00e5ff;
       margin-bottom: 20px;
     }
-
     .info-box {
       background: #1c1c1c;
       padding: 20px;
@@ -30,12 +30,10 @@
       width: 100%;
       box-shadow: 0 0 10px rgba(0,229,255,0.4);
     }
-
     .info-box p {
       margin: 10px 0;
       font-size: 16px;
     }
-
     .invite-link {
       background-color: #333;
       padding: 10px;
@@ -43,7 +41,6 @@
       word-break: break-word;
       border: 1px solid #00e5ff;
     }
-
     .copy-btn {
       margin-top: 15px;
       padding: 10px 20px;
@@ -54,26 +51,50 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     .copy-btn:hover {
       background-color: #00bcd4;
     }
-
     .status {
       margin-top: 10px;
       font-size: 14px;
       color: lightgreen;
     }
-
     #invitedList {
       margin-top: 10px;
       text-align: right;
     }
-
     #invitedList p {
       margin: 5px 0;
       font-size: 14px;
       color: #ccc;
+    }
+    /* شريط التنقل السفلي */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background-color: #111;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #00e5ff;
+      z-index: 1000;
+    }
+    .bottom-nav a {
+      color: #00e5ff;
+      font-size: 24px;
+      text-decoration: none;
+      padding: 8px;
+      transition: color 0.3s ease;
+    }
+    .bottom-nav a:hover {
+      color: #00bcd4;
+    }
+    .bottom-nav a.active {
+      color: #ffffff;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -90,6 +111,15 @@
     <p><strong>قائمة المدعوين:</strong></p>
     <div id="invitedList"></div>
   </div>
+
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <a href="index.html" aria-label="الرئيسية">🏠</a>
+    <a href="balance.html" aria-label="الرصيد">💰</a>
+    <a href="tasks.html" aria-label="المهام">📝</a>
+    <a href="invite.html" aria-label="دعوة الأصدقاء" class="active">🤝</a>
+    <a href="about.html" aria-label="عنّا">ℹ️</a>
+  </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -124,15 +154,22 @@
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const data = userDoc.data();
-          const inviteCode = data.inviteCode || "غير موجود";
+          const inviteCode = String(data.inviteCode || "غير موجود");
+          console.log("كود الدعوة الخاص بالمستخدم:", inviteCode);
+
           codeEl.textContent = inviteCode;
 
-          const inviteLink = `https://storepupg.netlify.app/register.html?ref=${inviteCode}`;
+          const inviteLink = inviteCode !== "غير موجود"
+            ? `https://storepupg.netlify.app/register.html?ref=${inviteCode}`
+            : "لا يوجد رابط دعوة حاليا";
           linkEl.textContent = inviteLink;
 
           // حساب عدد الأشخاص المدعوين
           const q = query(collection(db, "users"), where("invitedBy", "==", inviteCode));
           const snapshot = await getDocs(q);
+
+          console.log("عدد المستخدمين المدعوين (snapshot.size):", snapshot.size);
+
           refCountEl.textContent = snapshot.size;
 
           // عرض الإيميلات المدعوة
@@ -164,6 +201,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
