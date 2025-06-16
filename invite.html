@@ -107,7 +107,7 @@
         const email = user.email;
         emailEl.textContent = email;
 
-        const userDoc = await getDoc(doc(db, "users", email));
+        const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const data = userDoc.data();
           const inviteCode = data.inviteCode || "غير موجود";
