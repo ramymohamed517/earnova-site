@@ -64,6 +64,17 @@
       font-size: 14px;
       color: lightgreen;
     }
+
+    #invitedList {
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    #invitedList p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
@@ -76,6 +87,8 @@
     <button class="copy-btn" onclick="copyLink()">نسخ الرابط</button>
     <div class="status" id="copyStatus"></div>
     <p><strong>عدد الأشخاص الذين سجلوا عن طريقك:</strong> <span id="refCount">...</span></p>
+    <p><strong>قائمة المدعوين:</strong></p>
+    <div id="invitedList"></div>
   </div>
 
   <script type="module">
@@ -101,6 +114,7 @@
     const codeEl = document.getElementById("code");
     const linkEl = document.getElementById("link");
     const refCountEl = document.getElementById("refCount");
+    const invitedListEl = document.getElementById("invitedList");
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -116,13 +130,23 @@
           const inviteLink = `https://storepupg.netlify.app/register.html?ref=${inviteCode}`;
           linkEl.textContent = inviteLink;
 
-          // حساب عدد الأشخاص المسجلين من رابط الدعوة
+          // حساب عدد الأشخاص المدعوين
           const q = query(collection(db, "users"), where("invitedBy", "==", inviteCode));
           const snapshot = await getDocs(q);
           refCountEl.textContent = snapshot.size;
+
+          // عرض الإيميلات المدعوة
+          invitedListEl.innerHTML = "";
+          snapshot.forEach((doc) => {
+            const invitedData = doc.data();
+            const p = document.createElement("p");
+            p.textContent = `📧 ${invitedData.email || "بلا بريد"}`;
+            invitedListEl.appendChild(p);
+          });
         } else {
           codeEl.textContent = "لم يتم العثور على بيانات.";
           refCountEl.textContent = "0";
+          invitedListEl.innerHTML = "";
         }
       } else {
         window.location.href = "index.html"; // إعادة التوجيه لصفحة الدخول
@@ -140,5 +164,6 @@
   </script>
 </body>
 </html>
+
 
 
