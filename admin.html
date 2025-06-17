@@ -45,7 +45,7 @@
 </head>
 <body>
   <h2>لوحة التحكم الإدارية</h2>
-  <input type="text" id="searchEmail" placeholder="اكتب البريد الإلكتروني">
+  <input type="text" id="searchUID" placeholder="اكتب UID المستخدم">
   <button onclick="searchUser()">🔍 بحث عن المستخدم</button>
 
   <div class="user-box" id="userBox" style="display:none;">
@@ -60,8 +60,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
-      getFirestore, doc, setDoc, deleteDoc,
-      query, collection, where, getDocs
+      getFirestore, doc, getDoc, setDoc, deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -78,26 +77,26 @@
 
     let currentUID = "";
 
+    // ✅ البحث باستخدام UID
     window.searchUser = async function () {
-      const email = document.getElementById("searchEmail").value.trim();
-      if (!email) return alert("من فضلك اكتب البريد الإلكتروني");
+      const uid = document.getElementById("searchUID").value.trim();
+      if (!uid) return alert("من فضلك اكتب UID المستخدم");
 
-      const q = query(collection(db, "users"), where("email", "==", email));
-      const querySnapshot = await getDocs(q);
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
 
-      if (!querySnapshot.empty) {
-        const docSnap = querySnapshot.docs[0];
+      if (docSnap.exists()) {
         const data = docSnap.data();
-        currentUID = docSnap.id;
+        currentUID = uid;
 
-        document.getElementById("email").textContent = data.email || email;
-        document.getElementById("uid").textContent = currentUID;
+        document.getElementById("email").textContent = data.email || "(غير متوفر)";
+        document.getElementById("uid").textContent = uid;
         document.getElementById("balanceInput").value = data.balance || 0;
         document.getElementById("inviteInput").value = data.inviteCode || "";
 
         document.getElementById("userBox").style.display = "block";
       } else {
-        alert("المستخدم غير موجود");
+        alert("❌ المستخدم غير موجود");
         document.getElementById("userBox").style.display = "none";
       }
     }
@@ -130,5 +129,6 @@
   </script>
 </body>
 </html>
+
 
 
