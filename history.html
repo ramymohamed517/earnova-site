@@ -108,9 +108,11 @@
   <!-- FontAwesome icons -->
   <script src="https://kit.fontawesome.com/8fa4d1c2c0.js" crossorigin="anonymous"></script>
 
+  <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
@@ -124,7 +126,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const phone = localStorage.getItem("userPhone");
+    const auth = getAuth(app);
 
     function getStatusClass(status) {
       if (status.includes("تم")) return "success";
@@ -132,30 +134,32 @@
       return "pending";
     }
 
-    async function loadOrders() {
-      const querySnapshot = await getDocs(collection(db, "orders"));
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = "index.html";
+
+      const q = query(
+        collection(db, "exchangeHistory"),
+        where("uid", "==", user.uid)
+      );
+
+      const querySnapshot = await getDocs(q);
       let html = "";
 
       querySnapshot.forEach((doc) => {
         const order = doc.data();
-        if (order.phone === phone) {
-          const date = new Date(order.createdAt.seconds * 1000).toLocaleString();
-          const statusClass = getStatusClass(order.status || "");
-          html += `
-            <div class="order">
-              <p>💳 <strong>الباقة:</strong> ${order.package}</p>
-              <p>📅 <strong>التاريخ:</strong> ${date}</p>
-              <p>🧾 <strong>الحالة:</strong> <span class="status ${statusClass}">${order.status}</span></p>
-              <img src="${order.imageUrl}" alt="صورة التحويل">
-            </div>
-          `;
-        }
+        const date = new Date(order.timestamp?.seconds * 1000).toLocaleString();
+        const statusClass = getStatusClass(order.status || "قيد التحقق");
+        html += `
+          <div class="order">
+            <p>💰 <strong>الطلب:</strong> ${order.package}</p>
+            <p>📅 <strong>التاريخ:</strong> ${date}</p>
+            <p>🧾 <strong>الحالة:</strong> <span class="status ${statusClass}">${order.status || "قيد التحقق"}</span></p>
+          </div>
+        `;
       });
 
       document.getElementById("orders").innerHTML = html || "<p style='text-align:center;'>لا يوجد طلبات.</p>";
-    }
-
-    window.onload = loadOrders;
+    });
   </script>
 </head>
 <body>
@@ -169,27 +173,30 @@
   <div id="orders">⏳ جارٍ التحميل...</div>
 
   <!-- شريط التنقل السفلي -->
-   <div class="bottom-nav">
+  <div class="bottom-nav">
     <a href="page.html">شحن</a>
     <a href="profit.html">نقاطك</a>
     <a href="role.html">مهام</a>
-    <a herf="invite.html">الدعوه</a>
+    <a href="invite.html">الدعوه</a>
   </div>
-  <!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
+
+  <!-- Tawk.to Chat Script -->
+  <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
 </body>
 </html>
+
+
+
 
 
 
