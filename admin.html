@@ -2,67 +2,90 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>لوحة التحكم الإدارية</title>
+  <title>رصيدك</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    /* نفس التنسيقات السابقة */
     body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #111;
-      color: white;
-      font-family: sans-serif;
-      padding: 30px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 0 70px;
+      text-align: center;
+      min-height: 100vh;
+      box-sizing: border-box;
     }
-
-    input, button {
-      margin: 5px 0;
-      padding: 10px;
-      width: 100%;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-    }
-
-    button {
-      background-color: #0d6efd;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0b5ed7;
-    }
-
-    .user-box {
-      background: #1c1c1c;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-
-    h2 {
+    h1 {
+      color: #00e5ff;
       margin-bottom: 20px;
+    }
+    .balance-box {
+      background: #1c1c1c;
+      padding: 30px;
+      border-radius: 10px;
+      border: 1px solid #00e5ff;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0,229,255,0.4);
+      margin-bottom: 20px;
+    }
+    .balance-amount {
+      font-size: 48px;
+      font-weight: bold;
+      color: #00e5ff;
+      margin: 20px 0;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background-color: #111;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #00e5ff;
+      z-index: 1000;
+    }
+    .bottom-nav a {
+      color: #00e5ff;
+      font-size: 24px;
+      text-decoration: none;
+      padding: 8px;
+      transition: color 0.3s ease;
+    }
+    .bottom-nav a:hover {
+      color: #00bcd4;
+    }
+    .bottom-nav a.active {
+      color: #ffffff;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>لوحة التحكم الإدارية</h2>
-  <input type="text" id="searchUID" placeholder="اكتب UID المستخدم">
-  <button onclick="searchUser()">🔍 بحث عن المستخدم</button>
-
-  <div class="user-box" id="userBox" style="display:none;">
-    <p>📧 <strong>البريد:</strong> <span id="email"></span></p>
-    <p>🆔 <strong>UID:</strong> <span id="uid"></span></p>
-    <p>💎 <strong>الرصيد:</strong> <input type="number" id="balanceInput" /></p>
-    <p>🧩 <strong>كود الدعوة:</strong> <input type="text" id="inviteInput" /></p>
-    <button onclick="updateUser()">💾 تحديث البيانات</button>
-    <button onclick="deleteUser()">❌ حذف المستخدم</button>
+  <h1>رصيدك الحالي</h1>
+  
+  <div class="balance-box">
+    <p>إجمالي النقاط المتاحة</p>
+    <div class="balance-amount" id="balance">0</div>
   </div>
+
+  <nav class="bottom-nav">
+    <a href="page.html" aria-label="الرئيسية">🏠</a>
+    <a href="profit.html" aria-label="الرصيد" class="active">💰</a>
+    <a href="role.html" aria-label="المهام">📝</a>
+    <a href="invite.html" aria-label="دعوة الأصدقاء">🤝</a>
+  </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import {
-      getFirestore, doc, getDoc, setDoc, deleteDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
@@ -70,81 +93,41 @@
       projectId: "storelogin-2878a",
       storageBucket: "storelogin-2878a.appspot.com",
       messagingSenderId: "769303028919",
-      appId: "1:769303028919:web:e8a635d10faa9486c41932"
+      appId: "1:769303028919:web:e8a635d10faa9486c41932",
+      measurementId: "G-FLBGGC4HSW"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let currentUID = "";
+    const balanceEl = document.getElementById("balance");
 
-    // ✅ البحث باستخدام UID
-    window.searchUser = async function () {
-      try {
-        const uid = document.getElementById("searchUID").value.trim();
-        if (!uid) return alert("من فضلك اكتب UID المستخدم");
-
-        const docRef = doc(db, "users", uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          currentUID = uid;
-
-          document.getElementById("email").textContent = data.email || "(غير متوفر)";
-          document.getElementById("uid").textContent = uid;
-          document.getElementById("balanceInput").value = data.balance || 0;
-          document.getElementById("inviteInput").value = data.inviteCode || "";
-
-          document.getElementById("userBox").style.display = "block";
-        } else {
-          alert("❌ المستخدم غير موجود");
-          document.getElementById("userBox").style.display = "none";
-        }
-      } catch (error) {
-        console.error("Error searching user:", error);
-        alert("حدث خطأ أثناء البحث: " + error.message);
-      }
-    }
-
-    window.updateUser = async function () {
-      try {
-        if (!currentUID) return alert("لم يتم تحديد مستخدم");
-
-        const balance = parseInt(document.getElementById("balanceInput").value);
-        const invite = document.getElementById("inviteInput").value.trim();
-
-        await setDoc(doc(db, "users", currentUID), {
-          balance,
-          inviteCode: invite
-        }, { merge: true });
-
-        alert("✅ تم تحديث البيانات بنجاح");
-      } catch (error) {
-        console.error("Error updating user:", error);
-        alert("حدث خطأ أثناء التحديث: " + error.message);
-      }
-    }
-
-    window.deleteUser = async function () {
-      try {
-        if (!currentUID) return alert("لم يتم تحديد مستخدم");
-
-        const confirmDelete = confirm("⚠️ هل أنت متأكد من حذف هذا المستخدم؟");
-        if (!confirmDelete) return;
-
-        await deleteDoc(doc(db, "users", currentUID));
-        alert("✅ تم حذف المستخدم بنجاح");
+    // 1. تحقق من حالة المستخدم
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // 2. جلب بيانات المستخدم من Firestore
+        const userDoc = await getDoc(doc(db, "users", user.uid));
         
-        document.getElementById("userBox").style.display = "none";
-        document.getElementById("searchUID").value = "";
-        currentUID = "";
-      } catch (error) {
-        console.error("Error deleting user:", error);
-        alert("حدث خطأ أثناء الحذف: " + error.message);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          
+          // 3. عرض الرصيد إذا كان موجوداً
+          if (userData.balance !== undefined) {
+            balanceEl.textContent = userData.balance;
+          } else {
+            balanceEl.textContent = "0";
+            console.warn("حقل الرصيد غير موجود في بيانات المستخدم");
+          }
+        } else {
+          console.error("مستند المستخدم غير موجود");
+          window.location.href = "index.html";
+        }
+      } else {
+        // إذا لم يكن مسجلاً، إعادة توجيه لصفحة تسجيل الدخول
+        window.location.href = "index.html";
       }
-    }
+    });
   </script>
 </body>
 </html>
