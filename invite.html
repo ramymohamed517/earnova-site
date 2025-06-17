@@ -112,6 +112,7 @@
     <input type="text" id="link" class="invite-link" readonly />
     <button class="copy-btn" onclick="copyLink()">نسخ الرابط</button>
     <div class="status" id="copyStatus"></div>
+    <p><strong>عدد الزيارات للرابط:</strong> <span id="visitsCount">...</span></p>
     <p><strong>عدد الأشخاص الذين سجلوا عن طريقك:</strong> <span id="refCount">...</span></p>
     <p><strong>قائمة المدعوين:</strong></p>
     <div id="invitedList"></div>
@@ -146,6 +147,7 @@
     const emailEl = document.getElementById("email");
     const codeEl = document.getElementById("code");
     const linkEl = document.getElementById("link");
+    const visitsCountEl = document.getElementById("visitsCount");
     const refCountEl = document.getElementById("refCount");
     const invitedListEl = document.getElementById("invitedList");
 
@@ -154,7 +156,6 @@
         const email = user.email;
         emailEl.textContent = email;
 
-        // هنا تأكد من أن مفتاح مستند المستخدم هو uid أو email حسب قاعدة البيانات عندك
         const userDoc = await getDoc(doc(db, "users", user.uid)); 
 
         if (userDoc.exists()) {
@@ -167,11 +168,17 @@
             : "لا يوجد رابط دعوة حاليا";
           linkEl.value = inviteLink;
 
+          // جلب عدد الزيارات
+          const visitsQuery = query(collection(db, "visits"), where("refCode", "==", inviteCode));
+          const visitsSnapshot = await getDocs(visitsQuery);
+          visitsCountEl.textContent = visitsSnapshot.size;
+
+          // جلب عدد المسجلين
           const q = query(collection(db, "users"), where("invitedBy", "==", inviteCode));
           const snapshot = await getDocs(q);
-
           refCountEl.textContent = snapshot.size;
 
+          // عرض قائمة المدعوين
           invitedListEl.innerHTML = "";
           snapshot.forEach((doc) => {
             const invitedData = doc.data();
@@ -181,6 +188,7 @@
           });
         } else {
           codeEl.textContent = "لم يتم العثور على بيانات.";
+          visitsCountEl.textContent = "0";
           refCountEl.textContent = "0";
           invitedListEl.innerHTML = "";
         }

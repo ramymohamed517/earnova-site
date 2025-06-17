@@ -265,7 +265,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get("ref");
     // إعدادات Firebase (غيرها ببيانات مشروعك)
     const firebaseConfig = {
       apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
