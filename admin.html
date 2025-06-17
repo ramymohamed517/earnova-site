@@ -26,7 +26,10 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getFirestore, doc, setDoc, deleteDoc,
+      query, collection, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
@@ -46,16 +49,16 @@
       const email = document.getElementById("searchEmail").value.trim();
       if (!email) return alert("اكتب البريد");
 
-      const q = doc(db, "users", email);
-      const docSnap = await getDoc(q);
+      const q = query(collection(db, "users"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        currentUID = email;
-        document.getElementById("email").textContent = email;
-        document.getElementById("uid").textContent = email;
-        document.getElementById("balanceInput").value = data.balance || 0;
-        document.getElementById("inviteInput").value = data.inviteCode || "";
+      if (!querySnapshot.empty) {
+        const docData = querySnapshot.docs[0].data();
+        currentUID = querySnapshot.docs[0].id;
+        document.getElementById("email").textContent = docData.email || email;
+        document.getElementById("uid").textContent = currentUID;
+        document.getElementById("balanceInput").value = docData.balance || 0;
+        document.getElementById("inviteInput").value = docData.inviteCode || "";
         document.getElementById("userBox").style.display = "block";
       } else {
         alert("المستخدم غير موجود");
@@ -84,3 +87,4 @@
   </script>
 </body>
 </html>
+
