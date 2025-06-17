@@ -59,6 +59,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import {
       getFirestore, doc, getDoc, setDoc, deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -73,59 +74,76 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
     let currentUID = "";
 
     // ✅ البحث باستخدام UID
     window.searchUser = async function () {
-      const uid = document.getElementById("searchUID").value.trim();
-      if (!uid) return alert("من فضلك اكتب UID المستخدم");
+      try {
+        const uid = document.getElementById("searchUID").value.trim();
+        if (!uid) return alert("من فضلك اكتب UID المستخدم");
 
-      const docRef = doc(db, "users", uid);
-      const docSnap = await getDoc(docRef);
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        currentUID = uid;
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          currentUID = uid;
 
-        document.getElementById("email").textContent = data.email || "(غير متوفر)";
-        document.getElementById("uid").textContent = uid;
-        document.getElementById("balanceInput").value = data.balance || 0;
-        document.getElementById("inviteInput").value = data.inviteCode || "";
+          document.getElementById("email").textContent = data.email || "(غير متوفر)";
+          document.getElementById("uid").textContent = uid;
+          document.getElementById("balanceInput").value = data.balance || 0;
+          document.getElementById("inviteInput").value = data.inviteCode || "";
 
-        document.getElementById("userBox").style.display = "block";
-      } else {
-        alert("❌ المستخدم غير موجود");
-        document.getElementById("userBox").style.display = "none";
+          document.getElementById("userBox").style.display = "block";
+        } else {
+          alert("❌ المستخدم غير موجود");
+          document.getElementById("userBox").style.display = "none";
+        }
+      } catch (error) {
+        console.error("Error searching user:", error);
+        alert("حدث خطأ أثناء البحث: " + error.message);
       }
     }
 
     window.updateUser = async function () {
-      if (!currentUID) return alert("لم يتم تحديد مستخدم");
+      try {
+        if (!currentUID) return alert("لم يتم تحديد مستخدم");
 
-      const balance = parseInt(document.getElementById("balanceInput").value);
-      const invite = document.getElementById("inviteInput").value.trim();
+        const balance = parseInt(document.getElementById("balanceInput").value);
+        const invite = document.getElementById("inviteInput").value.trim();
 
-      await setDoc(doc(db, "users", currentUID), {
-        balance,
-        inviteCode: invite
-      }, { merge: true });
+        await setDoc(doc(db, "users", currentUID), {
+          balance,
+          inviteCode: invite
+        }, { merge: true });
 
-      alert("✅ تم تحديث البيانات بنجاح");
+        alert("✅ تم تحديث البيانات بنجاح");
+      } catch (error) {
+        console.error("Error updating user:", error);
+        alert("حدث خطأ أثناء التحديث: " + error.message);
+      }
     }
 
     window.deleteUser = async function () {
-      if (!currentUID) return alert("لم يتم تحديد مستخدم");
+      try {
+        if (!currentUID) return alert("لم يتم تحديد مستخدم");
 
-      const confirmDelete = confirm("⚠️ هل أنت متأكد من حذف هذا المستخدم؟");
-      if (!confirmDelete) return;
+        const confirmDelete = confirm("⚠️ هل أنت متأكد من حذف هذا المستخدم؟");
+        if (!confirmDelete) return;
 
-      await deleteDoc(doc(db, "users", currentUID));
-      alert("✅ تم حذف المستخدم بنجاح");
-      
-
-      document.getElementById("userBox").style.display = "none";
+        await deleteDoc(doc(db, "users", currentUID));
+        alert("✅ تم حذف المستخدم بنجاح");
+        
+        document.getElementById("userBox").style.display = "none";
+        document.getElementById("searchUID").value = "";
+        currentUID = "";
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        alert("حدث خطأ أثناء الحذف: " + error.message);
+      }
     }
   </script>
 </body>
