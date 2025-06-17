@@ -229,7 +229,6 @@
     </div>
   </div>
 
-  <!-- القواعد -->
   <div class="rules">
     <h2>ملاحظات هامة:</h2>
     <ul>
@@ -241,28 +240,68 @@
     </ul>
   </div>
 
-  <!-- الشريط السفلي -->
   <div class="bottom-nav">
     <a href="page.html">شحن</a>
     <a href="profit.html">نقاطك</a>
     <a href="role.html">مهام</a>
-    <a herf="invite.html">الدعوه</a>
+    <a href="invite.html">الدعوه</a>
   </div>
-  <!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
+
+  <!-- Firebase: تحديث الرصيد لحظيًا -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
+      authDomain: "storelogin-2878a.firebaseapp.com",
+      projectId: "storelogin-2878a",
+      storageBucket: "storelogin-2878a.appspot.com",
+      messagingSenderId: "769303028919",
+      appId: "1:769303028919:web:e8a635d10faa9486c41932",
+      measurementId: "G-FLBGGC4HSW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const pointsEl = document.querySelector(".points-box p");
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        onSnapshot(userRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const points = data.balance ?? 0;
+            pointsEl.textContent = `${points} نقطة`;
+          } else {
+            pointsEl.textContent = "0 نقطة";
+          }
+        });
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+
+  <!-- Tawk.to chat -->
+  <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
 </body>
 </html>
+
 
 
 
