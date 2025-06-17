@@ -5,12 +5,7 @@
   <title>نقاطك - PUBG Rewards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #fff;
@@ -20,42 +15,35 @@
       padding-bottom: 100px;
       overflow-x: hidden;
     }
-
     body::before {
       content: "";
       position: fixed;
       top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       background: linear-gradient(-45deg, #1e1e2f, #2e2e4d, #1b1b2a);
       background-size: 400% 400%;
       animation: gradientBG 10s ease infinite;
       z-index: -2;
     }
-
     @keyframes gradientBG {
       0% {background-position: 0% 50%;}
       50% {background-position: 100% 50%;}
       100% {background-position: 0% 50%;}
     }
-
     .overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.6);
       z-index: -1;
     }
-
     .header {
       padding: 25px 15px 10px;
     }
-
     .header h1 {
       font-size: 26px;
       color: #00ffcc;
       text-shadow: 0 0 10px #00ffcc55;
     }
-
     .points-box {
       margin: 20px auto;
       max-width: 300px;
@@ -65,19 +53,12 @@
       border: 1px solid #00ffcc55;
       box-shadow: 0 0 15px #00ffcc33;
     }
-
-    .points-box h2 {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #eee;
-    }
-
+    .points-box h2 { font-size: 20px; margin-bottom: 10px; color: #eee; }
     .points-box p {
       font-size: 22px;
       color: #00ffcc;
       font-weight: bold;
     }
-
     .rewards {
       display: flex;
       flex-wrap: wrap;
@@ -85,7 +66,6 @@
       gap: 15px;
       padding: 20px;
     }
-
     .reward-card {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid #00ffcc33;
@@ -94,23 +74,11 @@
       padding: 15px;
       box-shadow: 0 0 10px #00ffcc22;
       transition: transform 0.3s ease;
+      cursor: pointer;
     }
-
-    .reward-card:hover {
-      transform: scale(1.05);
-    }
-
-    .reward-card h3 {
-      color: #00ffcc;
-      margin-bottom: 8px;
-      font-size: 18px;
-    }
-
-    .reward-card p {
-      color: #eee;
-      font-size: 15px;
-    }
-
+    .reward-card:hover { transform: scale(1.05); }
+    .reward-card h3 { color: #00ffcc; margin-bottom: 8px; font-size: 18px; }
+    .reward-card p { color: #eee; font-size: 15px; }
     .rules {
       background: rgba(255, 255, 255, 0.05);
       margin: 20px auto 100px;
@@ -121,19 +89,16 @@
       max-width: 90%;
       text-align: right;
     }
-
     .rules h2 {
       color: #00ffcc;
       margin-bottom: 10px;
       font-size: 20px;
     }
-
     .rules ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
-
     .rules ul li {
       margin-bottom: 10px;
       font-size: 14px;
@@ -141,7 +106,6 @@
       position: relative;
       padding-right: 20px;
     }
-
     .rules ul li::before {
       content: "•";
       position: absolute;
@@ -149,12 +113,9 @@
       color: #00ffcc;
       font-size: 18px;
     }
-
     .bottom-nav {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       background: #0a0a0a;
       display: flex;
       justify-content: space-around;
@@ -163,7 +124,6 @@
       z-index: 1000;
       box-shadow: 0 -2px 10px #00ffcc33;
     }
-
     .bottom-nav a {
       color: #00ffcc;
       font-weight: bold;
@@ -171,72 +131,43 @@
       font-size: 16px;
       transition: 0.3s;
     }
-
     .bottom-nav a:hover {
       color: #fff;
       text-shadow: 0 0 5px #00ffcc;
     }
-
     @media (max-width: 500px) {
-      .reward-card {
-        width: 45%;
-      }
-
-      .bottom-nav a {
-        font-size: 15px;
-      }
+      .reward-card { width: 45%; }
+      .bottom-nav a { font-size: 15px; }
     }
-
     @media (max-width: 360px) {
-      .reward-card {
-        width: 90%;
-      }
-
-      .bottom-nav a {
-        font-size: 14px;
-      }
+      .reward-card { width: 90%; }
+      .bottom-nav a { font-size: 14px; }
     }
   </style>
 </head>
 <body>
   <div class="overlay"></div>
-
-  <div class="header">
-    <h1>رصيد نقاطك</h1>
-  </div>
-
+  <div class="header"><h1>رصيد نقاطك</h1></div>
   <div class="points-box">
     <h2>لديك حاليًا:</h2>
     <p>0 نقطة</p>
   </div>
 
   <div class="rewards">
-    <div class="reward-card">
-      <h3>60 UC</h3>
-      <p>مقابل 1800 نقطة</p>
-    </div>
-    <div class="reward-card">
-      <h3>120 UC</h3>
-      <p>مقابل 3600 نقطة</p>
-    </div>
-    <div class="reward-card">
-      <h3>325 UC</h3>
-      <p>مقابل 7000 نقطة</p>
-    </div>
-    <div class="reward-card">
-      <h3>660 UC</h3>
-      <p>مقابل 12000 نقطة</p>
-    </div>
+    <div class="reward-card"><h3>60 UC</h3><p>مقابل 1800 نقطة</p></div>
+    <div class="reward-card"><h3>120 UC</h3><p>مقابل 3600 نقطة</p></div>
+    <div class="reward-card"><h3>325 UC</h3><p>مقابل 7000 نقطة</p></div>
+    <div class="reward-card"><h3>660 UC</h3><p>مقابل 12000 نقطة</p></div>
   </div>
 
   <div class="rules">
     <h2>ملاحظات هامة:</h2>
     <ul>
-      <li>استبدل النقاط مقابل شدات PUBG بسهولة من القائمة أعلاه.</li>
-      <li>اكسب النقاط من خلال دعوة أصدقائك للتسجيل في التطبيق.</li>
-      <li>يشترط أن يكون الأعضاء نشيطين لمدة لا تقل عن 3 أيام.</li>
-      <li>يتم تسليم الشدات خلال 24 ساعة من الاستبدال.</li>
-      <li>لا يُسمح باستخدام حسابات وهمية.</li>
+      <li>استبدل النقاط مقابل شدات PUBG بسهولة.</li>
+      <li>اكسب النقاط من دعوة الأصدقاء.</li>
+      <li>يجب أن يكون الأعضاء نشيطين 3 أيام.</li>
+      <li>تسليم الشدات خلال 24 ساعة.</li>
+      <li>لا يُسمح بالحسابات الوهمية.</li>
     </ul>
   </div>
 
@@ -247,11 +178,14 @@
     <a href="invite.html">الدعوه</a>
   </div>
 
-  <!-- Firebase: تحديث الرصيد لحظيًا -->
+  <!-- Firebase: تحديث الرصيد وتنفيذ الاستبدال -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getFirestore, doc, onSnapshot, getDoc,
+      updateDoc, addDoc, collection, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
@@ -268,39 +202,84 @@
     const db = getFirestore(app);
 
     const pointsEl = document.querySelector(".points-box p");
+    let currentPoints = 0;
 
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        onSnapshot(userRef, (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const points = data.balance ?? 0;
-            pointsEl.textContent = `${points} نقطة`;
-          } else {
-            pointsEl.textContent = "0 نقطة";
+      if (!user) return window.location.href = "index.html";
+
+      const userRef = doc(db, "users", user.uid);
+
+      onSnapshot(userRef, (docSnap) => {
+        if (docSnap.exists()) {
+          currentPoints = docSnap.data().balance || 0;
+          pointsEl.textContent = `${currentPoints} نقطة`;
+        }
+      });
+
+      const exchangeOptions = {
+        "60 UC": 1800,
+        "120 UC": 3600,
+        "325 UC": 7000,
+        "660 UC": 12000
+      };
+
+      document.querySelectorAll(".reward-card").forEach(card => {
+        card.addEventListener("click", async () => {
+          const rewardTitle = card.querySelector("h3").textContent.trim();
+          const requiredPoints = exchangeOptions[rewardTitle];
+
+          if (currentPoints < requiredPoints) {
+            alert("نقاطك غير كافية لهذه المكافأة.");
+            return;
+          }
+
+          card.style.pointerEvents = "none"; // منع الضغط المكرر
+
+          try {
+            await updateDoc(userRef, {
+              balance: currentPoints - requiredPoints
+            });
+
+            currentPoints -= requiredPoints;
+            pointsEl.textContent = `${currentPoints} نقطة`;
+
+            await addDoc(collection(db, "exchangeHistory"), {
+              uid: user.uid,
+              email: user.email,
+              item: rewardTitle,
+              pointsUsed: requiredPoints,
+              status: "قيد التحقق",
+              timestamp: serverTimestamp()
+            });
+
+            alert("تم تقديم طلب الاستبدال بنجاح!");
+            window.location.href = "history.html";
+
+          } catch (err) {
+            console.error(err);
+            alert("حدث خطأ أثناء تنفيذ الطلب.");
+            card.style.pointerEvents = "auto";
           }
         });
-      } else {
-        window.location.href = "index.html";
-      }
+      });
     });
   </script>
 
-  <!-- Tawk.to chat -->
+  <!-- Tawk.to Chat -->
   <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-      s1.async=true;
-      s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
-      s0.parentNode.insertBefore(s1,s0);
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
     })();
   </script>
 </body>
 </html>
+
 
 
 
