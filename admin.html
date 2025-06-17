@@ -5,22 +5,55 @@
   <title>لوحة التحكم الإدارية</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { background: #111; color: white; font-family: sans-serif; padding: 30px; }
-    input, button { margin: 5px 0; padding: 8px; width: 100%; }
-    .user-box { background: #1c1c1c; padding: 20px; border-radius: 10px; margin-top: 20px; }
+    body {
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+      padding: 30px;
+    }
+
+    input, button {
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    button {
+      background-color: #0d6efd;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0b5ed7;
+    }
+
+    .user-box {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <h2>لوحة التحكم الإدارية</h2>
   <input type="text" id="searchEmail" placeholder="اكتب البريد الإلكتروني">
-  <button onclick="searchUser()">بحث عن المستخدم</button>
+  <button onclick="searchUser()">🔍 بحث عن المستخدم</button>
 
   <div class="user-box" id="userBox" style="display:none;">
     <p>📧 <strong>البريد:</strong> <span id="email"></span></p>
-    <p>📛 <strong>UID:</strong> <span id="uid"></span></p>
-    <p>💎 <strong>الرصيد:</strong> <input type="number" id="balanceInput"></p>
-    <p>🧩 <strong>كود الدعوة:</strong> <input type="text" id="inviteInput"></p>
-    <button onclick="updateUser()">تحديث البيانات</button>
+    <p>🆔 <strong>UID:</strong> <span id="uid"></span></p>
+    <p>💎 <strong>الرصيد:</strong> <input type="number" id="balanceInput" /></p>
+    <p>🧩 <strong>كود الدعوة:</strong> <input type="text" id="inviteInput" /></p>
+    <button onclick="updateUser()">💾 تحديث البيانات</button>
     <button onclick="deleteUser()">❌ حذف المستخدم</button>
   </div>
 
@@ -47,25 +80,31 @@
 
     window.searchUser = async function () {
       const email = document.getElementById("searchEmail").value.trim();
-      if (!email) return alert("اكتب البريد");
+      if (!email) return alert("من فضلك اكتب البريد الإلكتروني");
 
       const q = query(collection(db, "users"), where("email", "==", email));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        const docData = querySnapshot.docs[0].data();
-        currentUID = querySnapshot.docs[0].id;
-        document.getElementById("email").textContent = docData.email || email;
+        const docSnap = querySnapshot.docs[0];
+        const data = docSnap.data();
+        currentUID = docSnap.id;
+
+        document.getElementById("email").textContent = data.email || email;
         document.getElementById("uid").textContent = currentUID;
-        document.getElementById("balanceInput").value = docData.balance || 0;
-        document.getElementById("inviteInput").value = docData.inviteCode || "";
+        document.getElementById("balanceInput").value = data.balance || 0;
+        document.getElementById("inviteInput").value = data.inviteCode || "";
+
         document.getElementById("userBox").style.display = "block";
       } else {
         alert("المستخدم غير موجود");
+        document.getElementById("userBox").style.display = "none";
       }
     }
 
     window.updateUser = async function () {
+      if (!currentUID) return alert("لم يتم تحديد مستخدم");
+
       const balance = parseInt(document.getElementById("balanceInput").value);
       const invite = document.getElementById("inviteInput").value.trim();
 
@@ -74,17 +113,22 @@
         inviteCode: invite
       }, { merge: true });
 
-      alert("تم التحديث بنجاح");
+      alert("✅ تم تحديث البيانات بنجاح");
     }
 
     window.deleteUser = async function () {
-      if (confirm("هل أنت متأكد من حذف هذا المستخدم؟")) {
-        await deleteDoc(doc(db, "users", currentUID));
-        alert("تم حذف المستخدم");
-        document.getElementById("userBox").style.display = "none";
-      }
+      if (!currentUID) return alert("لم يتم تحديد مستخدم");
+
+      const confirmDelete = confirm("⚠️ هل أنت متأكد من حذف هذا المستخدم؟");
+      if (!confirmDelete) return;
+
+      await deleteDoc(doc(db, "users", currentUID));
+      alert("✅ تم حذف المستخدم بنجاح");
+
+      document.getElementById("userBox").style.display = "none";
     }
   </script>
 </body>
 </html>
+
 
