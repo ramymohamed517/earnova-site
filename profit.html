@@ -183,7 +183,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import {
-      getFirestore, doc, onSnapshot, getDoc,
+      getFirestore, doc, onSnapshot,
       updateDoc, addDoc, collection, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -217,23 +217,29 @@
       });
 
       const exchangeOptions = {
-        "60 UC": 1800,
-        "120 UC": 3600,
-        "325 UC": 7000,
-        "660 UC": 12000
+        "60 uc": 1800,
+        "120 uc": 3600,
+        "325 uc": 7000,
+        "660 uc": 12000
       };
 
       document.querySelectorAll(".reward-card").forEach(card => {
         card.addEventListener("click", async () => {
-          const rewardTitle = card.querySelector("h3").textContent.trim();
+          const rewardTitleRaw = card.querySelector("h3").textContent.trim();
+          const rewardTitle = rewardTitleRaw.toLowerCase();
           const requiredPoints = exchangeOptions[rewardTitle];
+
+          if (!requiredPoints) {
+            alert("لا يمكن تحديد عدد النقاط المطلوبة لهذه المكافأة.");
+            return;
+          }
 
           if (currentPoints < requiredPoints) {
             alert("نقاطك غير كافية لهذه المكافأة.");
             return;
           }
 
-          card.style.pointerEvents = "none"; // منع الضغط المكرر
+          card.style.pointerEvents = "none";
 
           try {
             await updateDoc(userRef, {
@@ -246,7 +252,7 @@
             await addDoc(collection(db, "exchangeHistory"), {
               uid: user.uid,
               email: user.email,
-              item: rewardTitle,
+              item: rewardTitleRaw,
               pointsUsed: requiredPoints,
               status: "قيد التحقق",
               timestamp: serverTimestamp()
@@ -256,7 +262,7 @@
             window.location.href = "history.html";
 
           } catch (err) {
-            console.error(err);
+            console.error("خطأ أثناء الاستبدال:", err);
             alert("حدث خطأ أثناء تنفيذ الطلب.");
             card.style.pointerEvents = "auto";
           }
@@ -279,6 +285,7 @@
   </script>
 </body>
 </html>
+
 
 
 
