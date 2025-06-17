@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة التحكم الإدارية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { background: #111; color: white; font-family: sans-serif; padding: 30px; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; }
+    .user-box { background: #1c1c1c; padding: 20px; border-radius: 10px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h2>لوحة التحكم الإدارية</h2>
+  <input type="text" id="searchEmail" placeholder="اكتب البريد الإلكتروني">
+  <button onclick="searchUser()">بحث عن المستخدم</button>
+
+  <div class="user-box" id="userBox" style="display:none;">
+    <p>📧 <strong>البريد:</strong> <span id="email"></span></p>
+    <p>📛 <strong>UID:</strong> <span id="uid"></span></p>
+    <p>💎 <strong>الرصيد:</strong> <input type="number" id="balanceInput"></p>
+    <p>🧩 <strong>كود الدعوة:</strong> <input type="text" id="inviteInput"></p>
+    <button onclick="updateUser()">تحديث البيانات</button>
+    <button onclick="deleteUser()">❌ حذف المستخدم</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
+      authDomain: "storelogin-2878a.firebaseapp.com",
+      projectId: "storelogin-2878a",
+      storageBucket: "storelogin-2878a.appspot.com",
+      messagingSenderId: "769303028919",
+      appId: "1:769303028919:web:e8a635d10faa9486c41932"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentUID = "";
+
+    window.searchUser = async function () {
+      const email = document.getElementById("searchEmail").value.trim();
+      if (!email) return alert("اكتب البريد");
+
+      const q = doc(db, "users", email);
+      const docSnap = await getDoc(q);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        currentUID = email;
+        document.getElementById("email").textContent = email;
+        document.getElementById("uid").textContent = email;
+        document.getElementById("balanceInput").value = data.balance || 0;
+        document.getElementById("inviteInput").value = data.inviteCode || "";
+        document.getElementById("userBox").style.display = "block";
+      } else {
+        alert("المستخدم غير موجود");
+      }
+    }
+
+    window.updateUser = async function () {
+      const balance = parseInt(document.getElementById("balanceInput").value);
+      const invite = document.getElementById("inviteInput").value.trim();
+
+      await setDoc(doc(db, "users", currentUID), {
+        balance,
+        inviteCode: invite
+      }, { merge: true });
+
+      alert("تم التحديث بنجاح");
+    }
+
+    window.deleteUser = async function () {
+      if (confirm("هل أنت متأكد من حذف هذا المستخدم؟")) {
+        await deleteDoc(doc(db, "users", currentUID));
+        alert("تم حذف المستخدم");
+        document.getElementById("userBox").style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
