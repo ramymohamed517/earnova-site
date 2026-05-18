@@ -1,217 +1,284 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>شحن جواهر فري فاير</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<title>شحن فري فاير</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
-      text-align: center;
-      margin: 0;
-      position: relative;
-      padding-bottom: 70px;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+}
 
-    #bgVideo {
-      position: fixed;
-      top: 0;
-      left: 0;
-      min-width: 100%;
-      min-height: 100%;
-      object-fit: cover;
-      z-index: -2;
-    }
+body {
+  color: #fff;
+  text-align: center;
+  padding-bottom: 80px;
+}
 
-    .overlay {
-      position: fixed;
-      top: 0; right: 0; bottom: 0; left: 0;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: -1;
-    }
+/* فيديو الخلفية */
+#bgVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
 
-    .top-alert {
-      background: #ff0000cc;
-      color: #fff;
-      padding: 10px;
-      font-weight: bold;
-      font-size: 15px;
-    }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: -1;
+}
 
-    .top-alert span {
-      color: yellow;
-    }
+/* الهيدر */
+.header {
+  padding: 20px;
+}
 
-    .header {
-      padding: 25px 15px 10px;
-    }
+h1 {
+  color: #ff4444;
+}
 
-    .header h1 {
-      font-size: 26px;
-      color: #ff4444;
-    }
+/* input */
+.input-box input {
+  width: 90%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ff4444;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  margin-top: 10px;
+}
 
-    .header img {
-      height: 30px;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
+/* التبويبات */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
 
-    .input-box {
-      margin: 10px auto 20px;
-      max-width: 300px;
-    }
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid #ff4444;
+  margin: 0 5px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
 
-    .input-box input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 15px;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      border: 1px solid #ff444477;
-    }
+.tab.active {
+  background: #ff4444;
+}
 
-    .content {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      padding: 0 12px 30px;
-    }
+/* المحتوى */
+.section {
+  display: none;
+  padding: 10px;
+}
 
-    .price-card {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid #ff444455;
-      border-radius: 10px;
-      padding: 10px 5px;
-      box-shadow: 0 0 8px #ff444433;
-      transition: transform 0.3s ease;
-    }
+.section.active {
+  display: block;
+}
 
-    .price-card:hover {
-      transform: scale(1.05);
-    }
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
 
-    .price-card h2 {
-      font-size: 16px;
-      margin-bottom: 5px;
-      color: #ff4444;
-    }
+.card {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid #ff4444;
+  border-radius: 10px;
+  padding: 10px;
+}
 
-    .price-card p {
-      font-size: 13px;
-      color: #ccc;
-      margin-bottom: 5px;
-    }
+.card h2 {
+  color: #ff4444;
+}
 
-    .btn {
-      display: inline-block;
-      padding: 6px 10px;
-      background: #ff4444;
-      color: #fff;
-      border-radius: 6px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 13px;
-    }
+.btn {
+  display: inline-block;
+  padding: 6px 10px;
+  background: #ff4444;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
 
-    .btn:hover {
-      background: #e53935;
-    }
+/* nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: rgba(0,0,0,0.85);
+  padding: 12px;
+  border-top: 1px solid #ff4444;
+}
 
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      border-top: 1px solid #ff444433;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      height: 60px;
-      z-index: 10;
-    }
-
-    .bottom-nav a {
-      color: #ff4444;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .bottom-nav a:hover {
-      color: #ffffff;
-    }
-  </style>
+.bottom-nav a {
+  color: #ff4444;
+  text-decoration: none;
+  font-weight: bold;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- خلفية فيديو -->
-  <video autoplay muted loop playsinline id="bgVideo">
-    <source src="assets/images/vidio.mp4" type="video/mp4" />
-    متصفحك لا يدعم تشغيل الفيديو.
-  </video>
+<!-- فيديو -->
+<video autoplay muted loop playsinline id="bgVideo">
+  <source src="assets/images/vidio.mp4" type="video/mp4">
+</video>
 
-  <div class="overlay"></div>
+<div class="overlay"></div>
 
-  <!-- شريط تنبيه علوي -->
-  <div class="top-alert">
-    <span>فري فاير</span> 
+<div class="header">
+  <h1>شحن فري فاير 💎</h1>
+  <div class="input-box">
+    <input type="text" placeholder="ادخل ID أو الحساب">
   </div>
+</div>
 
-  <div class="header">
-    <h1>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Garena_Free_Fire_logo.png" alt="Free Fire" />
-      شحن جواهر فري فاير
-    </h1>
-    <div class="input-box">
-      <input type="text" placeholder="أدخل ID فري فاير الخاص بك">
+<!-- التبويبات -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('id')">شحن ID</div>
+  <div class="tab" onclick="showTab('account')">شحن أكونت</div>
+</div>
+
+<!-- قسم ID -->
+<div id="id" class="section active">
+  <div class="container">
+    <div class="card">
+      <h2> عضويه اسبوعي </h2>
+      <p>150 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+
+    <div class="card">
+      <h2>210 جوهرة</h2>
+      <p>120 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
     </div>
   </div>
+</div>
 
-  <div class="content">
-    <div class="price-card"><h2>50جوهرة💎</h2><p>30 جنيه</p><a class="btn" href="checkout.html?package=100 جوهرة - 15 جنيه">اشحن</a></div>
-    <div class="price-card"><h2>100 جوهرة💎</h2><p>60 جنيه</p><a class="btn" href="checkout.html?package=210 جوهرة - 30 جنيه">اشحن</a></div>
-    <div class="price-card"><h2>210 جوهرة💎</h2><p>120 جنيه</p><a class="btn" href="checkout.html?package=530 جوهرة - 65 جنيه">اشحن</a></div>
-    <div class="price-card"><h2>310 جوهرة💎</h2><p>180 جنيه</p><a class="btn" href="checkout.html?package=1060 جوهرة - 125 جنيه">اشحن</a></div>
-    <div class="price-card"><h2>420 جوهرة💎</h2><p>240 جنيه</p><a class="btn" href="checkout.html?package=5555 جوهرة - 550 جنيه">اشحن</a></div>
-    <div class="price-card"><h2>520 جوهرة💎</h2><p>275 جنيه</p><a class="btn" href="checkout.html?package=2180 جوهرة - 245 جنيه">اشحن</a></div>
-    <div class="price-card"><h2>1060 جوهرة💎</h2><p>560 جنيه</p><a class="btn" href="checkout.html?package=5555 جوهرة - 550 جنيه">اشحن</a></div>
-    <div class="price-card"><h2>2200 جوهرة💎</h2><p>1120 جنيه</p><a class="btn" href="checkout.html?package=5555 جوهرة - 550 جنيه">اشحن</a></div>
+<div id="account" class="section">
+  <div class="container">
+
+    <div class="card">
+      <h2>300 جوهرة</h2>
+      <p>165 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+
+    <div class="card">
+      <h2>400 جوهرة</h2>
+      <p>220 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+
+    <div class="card">
+      <h2>500 جوهرة</h2>
+      <p>275 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+
+    <div class="card">
+      <h2>600 جوهرة</h2>
+      <p>320 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+
+    <div class="card">
+      <h2>800 جوهرة</h2>
+      <p>430 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+
+    <div class="card">
+      <h2>1060 جوهرة</h2>
+      <p>465 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+
+    <div class="card">
+      <h2>1580 جوهرة</h2>
+      <p>750 جنيه</p>
+      <a class="btn" href="#">اشحن</a>
+    </div>
+<div class="card">
+  <h2>2180 جوهرة</h2>
+  <p>920 جنيه</p>
+  <a class="btn" href="#">اشحن</a>
+</div>
+
   </div>
-  </div>
+</div>
+<div style="margin:15px auto; padding:10px; background:rgba(0,0,0,0.6); border:1px solid #ff4444; border-radius:10px; max-width:300px;">
+  <p>لشحن الأكونت تواصل معنا:</p>
+  <a href="https://wa.me/201120132055" target="_blank" style="color:#25D366; font-weight:bold; text-decoration:none;">
+    📱 01120132055
+  </a>
+</div>
+<!-- nav -->
+<div class="bottom-nav">
+  <a href="home.html">شحن</a>
+  <a href="profit.html">نقاطك</a>
+  <a href="role.html">مهام</a>
+  <a href="invite.html">دعوة</a>
+</div>
 
-  <div class="bottom-nav">
-    <a href="home.html">شحن</a>  
-    <a href="profit.html">نقاطك</a>
-    <a href="role.html">مهام</a>
-    <a href="invite.html">الدعوه</a>
-  </div>
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
 
-  <!-- Tawk.to -->
-  <script type="text/javascript">
-  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-  (function(){
-  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-  s1.async=true;
-  s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
-  s1.charset='UTF-8';
-  s1.setAttribute('crossorigin','*');
-  s0.parentNode.insertBefore(s1,s0);
-  })();
-  </script>
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+<script>
+function order(packageName, price) {
+  let uid = document.querySelector('input').value;
 
+  if (!uid) {
+    alert("من فضلك ادخل الـ ID أولاً");
+    return;
+  }
+
+  let message = 
+`🔥 طلب شحن جديد
+🎮 اللعبة: Free Fire
+💎 الباقة: ${packageName}
+💰 السعر: ${price} جنيه
+🆔 ID: ${uid}`;
+
+  let phone = "201120132055";
+
+  let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
+
+  window.open(url, "_blank");
+}
+</script>
 </body>
 </html>
+
+
 
 
 
