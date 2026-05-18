@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>إتمام شحن فيفا</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {box-sizing: border-box; margin: 0; padding: 0;}
+
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #fff;
+      text-align: center;
+      padding-bottom: 100px;
+      background: #000;
+      min-height: 100vh;
+    }
+
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: -1;
+    }
+
+    h2 {
+      color: #00ff99;
+      margin: 20px 0;
+      font-size: 28px;
+    }
+
+    form {
+      max-width: 450px;
+      margin: auto;
+      background: rgba(0,0,0,0.75);
+      padding: 20px;
+      border-radius: 14px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      text-align: right;
+      color: #00ff99;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: #222;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .package-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px,1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .package-options label {
+      background: #111;
+      border: 1px solid #00ff99;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .package-options input {
+      display: none;
+    }
+
+    .package-options input:checked + label {
+      background: #00ff99;
+      color: #000;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #00ff99;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .message {
+      margin-top: 10px;
+      color: #0f0;
+    }
+
+    .transfer-info {
+      margin: 25px auto 15px;
+      background: rgba(0,0,0,0.6);
+      padding: 15px;
+      border-radius: 12px;
+      max-width: 450px;
+    }
+  </style>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB0LIb3gHU7vbd71CXTMu9N-9z4H_ig-l8",
+  authDomain: "storelogin-2878a.firebaseapp.com",
+  projectId: "storelogin-2878a",
+  storageBucket: "storelogin-2878a.appspot.com",
+  messagingSenderId: "769303028919",
+  appId: "1:769303028919:web:e8a635d10faa9486c41932"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+window.sendOrder = async () => {
+  try {
+
+    const user = auth.currentUser;
+
+    const fifaId = document.getElementById("fifaId").value;
+    const phone = document.getElementById("phone").value;
+    const screenshot = document.getElementById("screenshot").files[0];
+    const selectedPackage = document.querySelector('input[name="package"]:checked');
+
+    if (!fifaId || !phone || !screenshot || !selectedPackage) {
+      alert("يرجى ملء جميع البيانات");
+      return;
+    }
+
+    // رفع الصورة (Cloudinary)
+    const formData = new FormData();
+    formData.append("file", screenshot);
+    formData.append("upload_preset", "public_upload");
+
+    const res = await fetch("https://api.cloudinary.com/v1_1/dfwkrbg4p/image/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!data.secure_url) {
+      alert("فشل رفع الصورة");
+      return;
+    }
+
+    // 🔥 حفظ الطلب + UID مهم جدًا
+    await addDoc(collection(db, "fifaOrders"), {
+      fifaId,
+      phone,
+      package: selectedPackage.value,
+      imageUrl: data.secure_url,
+      status: "قيد المراجعة",
+      uid: user ? user.uid : "guest",   // 👈 أهم سطر
+      createdAt: new Date()
+    });
+
+    document.getElementById("msg").innerText = "✅ تم إرسال الطلب بنجاح";
+
+    setTimeout(() => {
+      window.location.href = "history.html";
+    }, 1500);
+
+  } catch (err) {
+    console.log(err);
+    alert(err.message);
+  }
+};
+</script>
+
+</head>
+
+<body>
+
+  <!-- الخلفية -->
+  <video autoplay muted loop id="bgVideo">
+    <source src="assets/images/vidio.mp4" type="video/mp4">
+  </video>
+
+  <div class="overlay"></div>
+
+  <h2>شحن FIFA POINTS</h2>
+
+  <div class="transfer-info">
+    <p>حول على الرقم: 01120132055</p>
+  </div>
+
+  <!-- الفورم (كما هو بدون حذف أي حاجة) -->
+  <form onsubmit="event.preventDefault(); sendOrder();">
+
+    <label>ID فيفا</label>
+    <input id="fifaId" type="text">
+
+    <label>رقم الهاتف</label>
+    <input id="phone" type="text">
+
+    <label>الباقة</label>
+
+    <div class="package-options">
+      <input type="radio" id="f1" name="package" value="40 FC - 21 جنيه"><label for="f1">40 FC</label>
+      <input type="radio" id="f2" name="package" value="100 FC - 60 جنيه"><label for="f2">100 FC</label>
+      <input type="radio" id="f3" name="package" value="210 FC - 120 جنيه"><label for="f3">210 FC</label>
+      <input type="radio" id="f4" name="package" value="310 FC - 180 جنيه"><label for="f4">310 FC</label>
+      <input type="radio" id="f5" name="package" value="420 FC - 240 جنيه"><label for="f5">420 FC</label>
+      <input type="radio" id="f6" name="package" value="520 FC - 275 جنيه"><label for="f6">520 FC</label>
+      <input type="radio" id="f7" name="package" value="1060 FC - 560 جنيه"><label for="f7">1060 FC</label>
+      <input type="radio" id="f8" name="package" value="2200 FC - 1120 جنيه"><label for="f8">2200 FC</label>
+    </div>
+
+    <label>صورة التحويل</label>
+    <input type="file" id="screenshot">
+
+    <button type="submit">شحن الآن</button>
+
+    <div class="message" id="msg"></div>
+
+  </form>
+
+</body>
+</html>
