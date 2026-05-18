@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>شحن فيفا </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      position: relative;
+      padding-bottom: 70px;
+    }
+
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: -1;
+    }
+
+    .top-alert {
+      background: #0f0c9477;
+      color: #fff;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .top-alert span {
+      color: yellow;
+    }
+
+    .header {
+      padding: 25px 15px 10px;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      color: #0f0c9477;
+    }
+
+    .header img {
+      height: 30px;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .input-box {
+      margin: 10px auto 20px;
+      max-width: 300px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid #0f0c9477;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 12px 30px;
+    }
+
+    .price-card {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #0f0c9477;
+      border-radius: 10px;
+      padding: 10px 5px;
+      box-shadow: 0 0 8px #0f0c9477;
+      transition: transform 0.3s ease;
+    }
+
+    .price-card:hover {
+      transform: scale(1.05);
+    }
+
+    .price-card h2 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #1edfc5ce;
+    }
+
+    .price-card p {
+      font-size: 13px;
+      color: #ccc;
+      margin-bottom: 5px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 10px;
+      background: #ff4444;
+      color: #fff;
+      border-radius: 6px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .btn:hover {
+      background: #e53935;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border-top: 1px solid #0c2cdd33;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 60px;
+      z-index: 10;
+    }
+
+    .bottom-nav a {
+      color: #2f24ca;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .bottom-nav a:hover {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- خلفية فيديو -->
+  <video autoplay muted loop playsinline id="bgVideo">
+    <source src="assets/images/vidio.mp4" type="video/mp4" />
+    متصفحك لا يدعم تشغيل الفيديو.
+  </video>
+
+  <div class="overlay"></div>
+
+  <!-- شريط تنبيه علوي -->
+  <div class="top-alert">
+    <span>FIFA</span> 
+  </div>
+
+  <div class="header">
+    <h1>
+     
+    </h1>
+    <div class="input-box">
+      <input type="text" placeholder="ادخل ال UID الخاص بك" />
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="price-card"><h2>40 FC </h2><p>21 جنيه</p><a class="btn" href="select.html">اشحن</a></div>
+    <div class="price-card"><h2>100 جوهرة💎</h2><p>60 جنيه</p><a class="btn" href="select.html?package=210 جوهرة - 30 جنيه">اشحن</a></div>
+    <div class="price-card"><h2>210 جوهرة💎</h2><p>120 جنيه</p><a class="btn" href="select.html?package=420 جوهرة - 60 جنيه">اشحن</a></div>
+    
+    <div class="price-card"><h2>310 جوهرة💎</h2><p>180 جنيه</p><a class="btn" href="checkout.html?package=1060 جوهرة - 125 جنيه">اشحن</a></div>
+    <div class="price-card"><h2>420 جوهرة💎</h2><p>240 جنيه</p><a class="btn" href="checkout.html?package=5555 جوهرة - 550 جنيه">اشحن</a></div>
+    <div class="price-card"><h2>520 جوهرة💎</h2><p>275 جنيه</p><a class="btn" href="checkout.html?package=2180 جوهرة - 245 جنيه">اشحن</a></div>
+    <div class="price-card"><h2>1060 جوهرة💎</h2><p>560 جنيه</p><a class="btn" href="checkout.html?package=5555 جوهرة - 550 جنيه">اشحن</a></div>
+    <div class="price-card"><h2>2200 جوهرة💎</h2><p>1120 جنيه</p><a class="btn" href="checkout.html?package=5555 جوهرة - 550 جنيه">اشحن</a></div>
+  </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="home.html">شحن</a>  
+    <a href="profit.html">نقاطك</a>
+    <a href="role.html">مهام</a>
+    <a href="invite.html">الدعوه</a>
+  </div>
+
+  <!-- Tawk.to -->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+
+</body>
+</html>
