@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>سجل الطلبات</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Segoe UI', Tahoma, sans-serif;
       color: #fff;
@@ -20,7 +22,6 @@
       padding: 20px 10px;
     }
 
-    /* فيديو خلفية */
     #bg-video {
       position: fixed;
       top: 0; left: 0;
@@ -53,12 +54,6 @@
       backdrop-filter: blur(4px);
     }
 
-    .order img {
-      width: 100%;
-      margin-top: 10px;
-      border-radius: 8px;
-    }
-
     .status {
       font-weight: bold;
       padding: 5px 10px;
@@ -70,7 +65,6 @@
     .status.success { background: #0f0; color: #000; }
     .status.rejected { background: red; color: #fff; }
 
-    /* شريط التنقل السفلي */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -93,22 +87,9 @@
       flex-direction: column;
       align-items: center;
     }
-
-    .bottom-nav a i {
-      font-size: 20px;
-      margin-bottom: 3px;
-    }
-
-    @media (max-width: 480px) {
-      h2 { font-size: 20px; }
-      .order p { font-size: 14px; }
-    }
   </style>
 
-  <!-- FontAwesome icons -->
-  <script src="https://kit.fontawesome.com/8fa4d1c2c0.js" crossorigin="anonymous"></script>
-
-  <!-- Firebase Scripts -->
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -120,8 +101,7 @@
       projectId: "storelogin-2878a",
       storageBucket: "storelogin-2878a.appspot.com",
       messagingSenderId: "769303028919",
-      appId: "1:769303028919:web:e8a635d10faa9486c41932",
-      measurementId: "G-FLBGGC4HSW"
+      appId: "1:769303028919:web:e8a635d10faa9486c41932"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -129,72 +109,73 @@
     const auth = getAuth(app);
 
     function getStatusClass(status) {
-      if (status.includes("تم")) return "success";
-      if (status.includes("مرفوض")) return "rejected";
+      if (status?.includes("تم")) return "success";
+      if (status?.includes("مرفوض")) return "rejected";
       return "pending";
     }
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) return window.location.href = "index.html";
+
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
 
       const q = query(
-        collection(db, "exchangeHistory"),
+        collection(db, "fifaOrders"),
         where("uid", "==", user.uid)
       );
 
       const querySnapshot = await getDocs(q);
+
       let html = "";
 
       querySnapshot.forEach((doc) => {
         const order = doc.data();
-        const date = new Date(order.timestamp?.seconds * 1000).toLocaleString();
-        const statusClass = getStatusClass(order.status || "قيد التحقق");
+
+        const date = order.createdAt
+          ? new Date(order.createdAt.seconds * 1000).toLocaleString()
+          : "غير محدد";
+
         html += `
           <div class="order">
             <p>💰 <strong>الطلب:</strong> ${order.package}</p>
             <p>📅 <strong>التاريخ:</strong> ${date}</p>
-            <p>🧾 <strong>الحالة:</strong> <span class="status ${statusClass}">${order.status || "قيد التحقق"}</span></p>
+            <p>🧾 <strong>الحالة:</strong>
+              <span class="status ${getStatusClass(order.status)}">
+                ${order.status || "قيد المراجعة"}
+              </span>
+            </p>
           </div>
         `;
       });
 
-      document.getElementById("orders").innerHTML = html || "<p style='text-align:center;'>لا يوجد طلبات.</p>";
+      document.getElementById("orders").innerHTML =
+        html || "<p>لا يوجد طلبات</p>";
     });
+
   </script>
 </head>
+
 <body>
-  <!-- فيديو الخلفية -->
+
   <video autoplay muted loop id="bg-video">
-    <source src="https://cdn.coverr.co/videos/coverr-digital-grid-3292/1080p.mp4" type="video/mp4">
-    متصفحك لا يدعم تشغيل الفيديو.
+    <source src="https://cdn.coverr.co/videos/coverr-digital-grid-3292/1080p.mp4">
   </video>
 
   <h2>📜 سجل الطلبات</h2>
+
   <div id="orders">⏳ جارٍ التحميل...</div>
 
-  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav">
     <a href="page.html">شحن</a>
     <a href="profit.html">نقاطك</a>
     <a href="role.html">مهام</a>
-    <a href="invite.html">الدعوه</a>
+    <a href="invite.html">الدعوة</a>
   </div>
 
-  <!-- Tawk.to Chat Script -->
-  <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-      s1.async=true;
-      s1.src='https://embed.tawk.to/68509987b671a7190e272836/1ittdfer7';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
-      s0.parentNode.insertBefore(s1,s0);
-    })();
-  </script>
 </body>
 </html>
-
 
 
 
